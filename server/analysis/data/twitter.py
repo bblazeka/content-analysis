@@ -6,7 +6,7 @@ from datetime import datetime, date, time, timedelta
 from collections import Counter
 import sys, json
 
-from .language import process_text, extract_entities
+from .language import extract_entities
 
 with open('keys/twitter.json') as json_file:
     data = json.load(json_file)
