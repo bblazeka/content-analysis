@@ -5,6 +5,7 @@ import { Accordion, Feed, Header, Icon, List, Label, Segment, Search } from 'sem
 
 import { IRootState } from '../../reducers/rootReducer';
 import { getNews } from '../../reducers/data.reducer';
+import { NewsFeed } from '../NewsFeed/NewsFeed';
 
 interface IProps {
   loading: boolean;
@@ -33,33 +34,12 @@ export class Dashboard extends React.Component<IProps, IState> {
   }
 
   render() {
+    const { news } = this.props;
     return (
       <div>
         <Search />
-        <Segment loading={this.props.news.length === 0}>
-          <Feed>
-            {this.props.news.map((element: any) => {
-              return (<Feed.Event key={element.title}>
-                <Feed.Label icon='newspaper' />
-                <Feed.Content>
-                  <Feed.Summary><a href={element.url}>{element.title}</a></Feed.Summary>
-                  <Feed.Date>{element.author}</Feed.Date>
-                  <Feed.Extra>
-                    {element.description}
-                  </Feed.Extra>
-                  <Feed.Meta>
-                    <List horizontal>
-                      {element.entities.map((entity: any) => {
-                        return(<List.Item key={entity.type+entity.text}>
-                          <Label content={` ${entity.text}`} icon={entity.type} />
-                        </List.Item>)
-                      })}
-                    </List>                    
-                  </Feed.Meta>
-                </Feed.Content>
-              </Feed.Event>)
-            })}
-          </Feed>
+        <Segment loading={news.length === 0}>
+          <NewsFeed news={news}/>
         </Segment>
       </div>
     );

@@ -3,7 +3,7 @@ const apiUrl = 'http://127.0.0.1:5000';
 
 const initialState = {
     loading: false,
-    news: []
+    news: [],
 };
 
 export type DataState = Readonly<typeof initialState>;
@@ -20,6 +20,16 @@ export default (state: DataState = initialState, action: any): DataState => {
                 ...state,
                 news: []
             }
+        case ACTION_TYPES.ENTITY_NEWS_FETCH_SUCCESS:
+            return {
+                ...state,
+                news: action.payload
+            }
+        case ACTION_TYPES.ENTITY_NEWS_FETCH_FAILURE:
+            return {
+                ...state,
+                news: []
+            }
         default:
             return state;
     }
@@ -28,6 +38,8 @@ export default (state: DataState = initialState, action: any): DataState => {
 export const ACTION_TYPES = {
     NEWS_FETCH_SUCCESS: 'NEWS_FETCH_SUCCESS',
     NEWS_FETCH_FAILURE: 'NEWS_FETCH_FAILURE',
+    ENTITY_NEWS_FETCH_SUCCESS: 'ENTITY_NEWS_FETCH_SUCCESS',
+    ENTITY_NEWS_FETCH_FAILURE: 'ENTITY_NEWS_FETCH_FAILURE',
 };
 
 export const getNews = () => async (dispatch : any, getState : any) => {
@@ -41,6 +53,21 @@ export const getNews = () => async (dispatch : any, getState : any) => {
     } else if (response.status === 401) {
         dispatch({
             type: ACTION_TYPES.NEWS_FETCH_FAILURE,
+        });
+    }
+}
+
+export const getEntityNews = (name : string) => async (dispatch : any, getState : any) => {
+    const response = await fetch(`${apiUrl}/news/${name}`);
+    const data = await response.json();
+    if (response.status === 200) {
+        dispatch({
+            type: ACTION_TYPES.ENTITY_NEWS_FETCH_SUCCESS,
+            payload: data
+        })
+    } else if (response.status === 401) {
+        dispatch({
+            type: ACTION_TYPES.ENTITY_NEWS_FETCH_FAILURE,
         });
     }
 }
