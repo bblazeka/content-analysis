@@ -1,17 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { Accordion, Feed, Grid, Icon, List, Label, Segment, Search } from 'semantic-ui-react';
+import { Accordion, Grid, Icon, List, Label, Segment, Search } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
-import { getNews, getEntityNews } from '../../reducers/data.reducer';
+import { getNews, getEntityNews, getWiki } from '../../reducers/data.reducer';
 import { NewsFeed } from '../NewsFeed/NewsFeed';
 
 interface IProps {
   loading: boolean;
-  news: any;
+  news: any[];
+  wiki: any;
   getNews: () => Promise<boolean>;
   getEntityNews: (name: string) => Promise<boolean>;
+  getWiki: (term: string) => Promise<boolean>;
 }
 
 interface IState {
@@ -35,6 +37,7 @@ export class Entity extends React.Component<IProps, IState> {
   componentDidMount() {
     const { name } = this.state;
     this.props.getEntityNews(name);
+    this.props.getWiki(name);
   }
 
   static getDerivedStateFromProps(props: any, state: any) {
@@ -57,12 +60,15 @@ export class Entity extends React.Component<IProps, IState> {
 
   render() {
     const { activeAccordion } = this.state;
-    const { news } = this.props;
+    const { news, wiki } = this.props;
     return (
       <Grid>
         <Grid.Row columns={2}>
           <Grid.Column>
-            wiki
+            {wiki && <Segment loading={!wiki}>
+              <h3>{wiki.title}</h3>
+              {wiki.summary}
+            </Segment>}
           </Grid.Column>
           <Grid.Column>
             <Accordion fluid styled>
@@ -75,7 +81,7 @@ export class Entity extends React.Component<IProps, IState> {
                 Related News
               </Accordion.Title>
               <Accordion.Content active={activeAccordion === 0}>
-                <NewsFeed news={news} />
+                {news && <NewsFeed news={news} />}
               </Accordion.Content>
 
               <Accordion.Title
@@ -100,10 +106,12 @@ export class Entity extends React.Component<IProps, IState> {
 const mapStateToProps = ({ data }: IRootState) => ({
   loading: data.loading,
   news: data.news,
+  wiki: data.wiki,
 });
 const mapDispatchToProps = (dispatch: any) => ({
   getNews: () => dispatch(getNews()),
   getEntityNews: (name: string) => dispatch(getEntityNews(name)),
+  getWiki: (term: string) => dispatch(getWiki(term))
 });
 export default connect(
   mapStateToProps,

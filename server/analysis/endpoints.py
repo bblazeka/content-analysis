@@ -4,6 +4,8 @@ Routes and views for the flask application.
 
 from analysis import app
 from flask.json import jsonify
+
+from analysis.data.wikipedia import get_wiki
 from analysis.data.twitter import get_tweets
 from analysis.data.newsapi import get_query_news, get_country_news
 
@@ -24,3 +26,8 @@ def feed(query):
 def news(query):
     news = get_query_news(query)
     return news
+
+@app.route('/wiki/<query>')
+def wiki(query):
+    wiki = get_wiki(query)
+    return wiki
