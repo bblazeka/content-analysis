@@ -9,6 +9,8 @@ import { IRootState } from '../../reducers/rootReducer';
 import keys from '../../keys.json';
 
 interface IProps {
+  lat: number;
+  lng: number;
 }
 
 interface IState {
@@ -38,7 +40,7 @@ export class Map extends React.Component<IProps, IState> {
     const map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [15.43811, 47.07103],
+      center: [this.props.lng, this.props.lat],
       zoom: 9
     });
 
@@ -57,13 +59,5 @@ export class Map extends React.Component<IProps, IState> {
   }
 }
 
-const mapStateToProps = ({ data }: IRootState) => ({
 
-});
-const mapDispatchToProps = (dispatch: any) => ({
-
-});
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Map);
+export default Map;

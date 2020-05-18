@@ -25,11 +25,9 @@ def extract_entities(text):
                     entity_dict[name]["type"] = 'building'     
     # can be person, organization or gpe = Geopolitical entity
     for k, v in entity_dict.items():
-        print(v)
         entities.append({
             "text": k,
             "type": v["type"],
             "count": v["count"]
         })
-    print(entities)
-    return entities
+    return sorted(entities, key=lambda k: k['count'], reverse=True) 

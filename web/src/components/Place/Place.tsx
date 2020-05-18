@@ -1,21 +1,26 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { Accordion, Feed, Grid, Icon, List, Label, Segment, Search } from 'semantic-ui-react';
+import { Accordion, Feed, Grid, Icon, List, Label, Segment } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
-import { getNews } from '../../reducers/data.reducer';
+import { getNews, getLocalTweets } from '../../reducers/data.reducer';
 import { Map } from '../Map/Map';
+import { TwitterFeed } from '../TwitterFeed/TwitterFeed';
 
 interface IProps {
   loading: boolean;
-  news: any;
+  news: any[];
+  tweets: any[];
   getNews: () => Promise<boolean>;
+  getLocalTweets: (lat: number, lng: number) => Promise<boolean>;
 }
 
 interface IState {
   loading: boolean;
   activeAccordion: number;
+  lat: number;
+  lng: number;
 }
 
 export class Place extends React.Component<IProps, IState> {
@@ -25,12 +30,15 @@ export class Place extends React.Component<IProps, IState> {
 
     this.state = {
       loading: false,
+      lat: 47.07103,
+      lng: 15.43811,
       activeAccordion: -1
     }
   }
 
   componentDidMount() {
     this.props.getNews();
+    this.props.getLocalTweets(this.state.lat, this.state.lng);
   }
 
   handleClick = (e: any, titleProps: any) => {
@@ -42,12 +50,13 @@ export class Place extends React.Component<IProps, IState> {
   }
 
   render() {
-    const { activeAccordion } = this.state;
+    const { activeAccordion, lat, lng } = this.state;
+    const { tweets } = this.props;
     return (
       <Grid>
         <Grid.Row columns={2}>
           <Grid.Column>
-            <Map />
+            <Map lat={lat} lng={lng}/>
           </Grid.Column>
           <Grid.Column>
             <Accordion fluid styled>
@@ -72,7 +81,7 @@ export class Place extends React.Component<IProps, IState> {
                 Tweets
               </Accordion.Title>
               <Accordion.Content active={activeAccordion === 1}>
-                <p>Local tweets here.</p>
+                <TwitterFeed tweets={tweets} />
               </Accordion.Content>
             </Accordion>
           </Grid.Column>
@@ -85,9 +94,11 @@ export class Place extends React.Component<IProps, IState> {
 const mapStateToProps = ({ data }: IRootState) => ({
   loading: data.loading,
   news: data.news,
+  tweets: data.tweets,
 });
 const mapDispatchToProps = (dispatch: any) => ({
   getNews: () => dispatch(getNews()),
+  getLocalTweets: (lat: number, lng: number) => dispatch(getLocalTweets(lat, lng))
 });
 export default connect(
   mapStateToProps,

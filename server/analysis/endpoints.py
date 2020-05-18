@@ -3,10 +3,11 @@ Routes and views for the flask application.
 """
 
 from analysis import app
+from flask import request
 from flask.json import jsonify
 
 from analysis.data.wikipedia import get_wiki
-from analysis.data.twitter import get_tweets
+from analysis.data.twitter import get_tweets, get_local_tweets
 from analysis.data.newsapi import get_query_news, get_country_news
 
 @app.route('/')
@@ -16,11 +17,19 @@ def home():
     news = get_country_news('us')
     return news
 
-@app.route('/feed/<query>')
-def feed(query):
-    #tweets = get_tweets(query)
-    print(news)
-    return jsonify(news)
+@app.route('/tweets/<query>')
+def tweets(query):
+    tweets = get_tweets(query, 10, "en")
+    print(tweets)
+    return jsonify(tweets)
+
+@app.route('/tweets/local/<query>')
+def local_tweets(query):
+    lat = request.args.get('lat')
+    lng = request.args.get('lng')
+    tweets = get_local_tweets(query, 10, "en", lat, lng)
+    print(tweets)
+    return jsonify(tweets)
 
 @app.route('/news/<query>')
 def news(query):
