@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { Accordion, Grid, Icon, List, Label, Segment, Search } from 'semantic-ui-react';
+import { Accordion, Grid, Icon, Segment } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
 import { getNews, getEntityNews, getWiki } from '../../reducers/data.reducer';
 import { NewsFeed } from '../NewsFeed/NewsFeed';
+import { EntityList } from '../EntityList/EntityList';
 
 interface IProps {
   loading: boolean;
@@ -32,10 +33,16 @@ export class Entity extends React.Component<IProps, IState> {
       loading: false,
       activeAccordion: -1
     }
+
+    this.fetchData = this.fetchData.bind(this);
   }
 
   componentDidMount() {
     const { name } = this.state;
+    this.fetchData(name);
+  }
+
+  fetchData(name: any) {
     this.props.getEntityNews(name);
     this.props.getWiki(name);
   }
@@ -68,6 +75,7 @@ export class Entity extends React.Component<IProps, IState> {
             {wiki && <Segment loading={!wiki}>
               <h3>{wiki.title}</h3>
               {wiki.summary}
+              <EntityList entities={ wiki.entities } redirect={this.fetchData} />
             </Segment>}
           </Grid.Column>
           <Grid.Column>

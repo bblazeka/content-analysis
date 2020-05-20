@@ -38,7 +38,7 @@ def get_tweets(query, count, lang):
     tweets = []
     
     for status in Cursor(auth_api.search,q=f'#{query}',count=count,
-                           since="2019-04-03").items():
+                           since="2020-01-01").items():
         if status.truncated == False and status.lang == lang:
             extract_entities(status.text)
             tweets.append(status._json)
