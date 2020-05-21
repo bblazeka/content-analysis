@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import mapboxgl from 'mapbox-gl';
 
-import { Accordion, Feed, Grid, Icon, List, Label, Segment, Search } from 'semantic-ui-react';
-
-import { IRootState } from '../../reducers/rootReducer';
+import { Segment } from 'semantic-ui-react';
 
 import keys from '../../keys.json';
+import './Map.scss';
 
 interface IProps {
   lat: number;

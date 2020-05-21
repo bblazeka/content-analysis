@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { Accordion, Feed, Header, Icon, List, Label, Segment, Search } from 'semantic-ui-react';
+import { Segment, Search } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
 import { getNews } from '../../reducers/data.reducer';

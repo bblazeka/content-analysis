@@ -123,7 +123,7 @@ export const getLocalTweets = (lat: number, lng: number) => async (dispatch: any
   }
 }
 
-const options = (token: string) => {
+/*const options = (token: string) => {
   return {
     method: 'GET',
     headers: {
@@ -131,4 +131,4 @@ const options = (token: string) => {
       'Content-Type': 'application/json; charset=utf-8',
     }
   }
-};
+};*/

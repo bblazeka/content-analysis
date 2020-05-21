@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Feed, Grid, Icon, List, Label, Segment, Search } from 'semantic-ui-react';
+import { Feed, List, Label } from 'semantic-ui-react';
 
 interface ITwitterFeedProps {
   tweets: any[];
