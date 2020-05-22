@@ -40,8 +40,13 @@ def get_tweets(query, count, lang):
     for status in Cursor(auth_api.search,q=f'#{query}',count=count,
                            since="2020-01-01").items():
         if status.truncated == False and status.lang == lang:
-            extract_entities(status.text)
-            tweets.append(status._json)
+            tweets.append({
+                "title": status.user.name,
+                "entities": extract_entities(status.text),
+                "description": status.user.screen_name,
+                "url": f'https://twitter.com/{status.user.screen_name}',
+                "text": status.text
+            })
     return tweets
 
 def get_local_tweets(query, count, lang, lat, lng):
@@ -49,7 +54,6 @@ def get_local_tweets(query, count, lang, lat, lng):
     for status in Cursor(auth_api.search,q=f'#{query}',count=count, geocode=f'{lat},{lng},10km',
                            since="2020-01-01").items():
         if status.truncated == False and status.lang == lang:
-            print(status._json)
             tweets.append({
                 "title": status.user.name,
                 "entities": extract_entities(status.text),

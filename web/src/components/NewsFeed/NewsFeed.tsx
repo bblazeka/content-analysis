@@ -1,12 +1,15 @@
 import * as React from 'react';
 
-import { Feed, List, Label } from 'semantic-ui-react';
+import { Feed } from 'semantic-ui-react';
+
+import { EntityList } from '../EntityList/EntityList';
 
 interface INewsFeedProps {
   news: any;
+  onEntityClick: any;
 }
 
-export const NewsFeed: React.FC<INewsFeedProps> = ({ news }) => {
+export const NewsFeed: React.FC<INewsFeedProps> = ({ news, onEntityClick }) => {
   return (
      <Feed>
       {news.map((element: any) => {
@@ -19,13 +22,7 @@ export const NewsFeed: React.FC<INewsFeedProps> = ({ news }) => {
               {element.description}
             </Feed.Extra>
             <Feed.Meta>
-              <List horizontal>
-                {element.entities.map((entity: any, index: number) => {
-                  return (<List.Item key={` ${entity.text} ${index}`}>
-                    <Label content={` ${entity.text}`} icon={entity.type} />
-                  </List.Item>)
-                })}
-              </List>
+              <EntityList entities={element.entities} onEntityClick={(entity) => onEntityClick(entity)} />
             </Feed.Meta>
           </Feed.Content>
         </Feed.Event>)

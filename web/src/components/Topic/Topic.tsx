@@ -4,15 +4,18 @@ import { connect } from 'react-redux';
 import { Accordion, Grid, Icon, Segment } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
-import { getNews, getEntityNews, getWiki } from '../../reducers/data.reducer';
+import { getNews, getEntityNews, getWiki, getTweets } from '../../reducers/data.reducer';
 import { NewsFeed } from '../NewsFeed/NewsFeed';
 import { EntityList } from '../EntityList/EntityList';
+import { TwitterFeed } from '../TwitterFeed/TwitterFeed';
 
 interface IProps {
   loading: boolean;
   news: any[];
+  tweets: any[];
   wiki: any;
   getNews: () => Promise<boolean>;
+  getTweets: (name: string) => Promise<boolean>;
   getEntityNews: (name: string) => Promise<boolean>;
   getWiki: (term: string) => Promise<boolean>;
 }
@@ -23,7 +26,7 @@ interface IState {
   activeAccordion: number;
 }
 
-export class Entity extends React.Component<IProps, IState> {
+export class Topic extends React.Component<IProps, IState> {
 
   constructor(props: any) {
     super(props);
@@ -44,6 +47,7 @@ export class Entity extends React.Component<IProps, IState> {
 
   fetchData(name: any) {
     this.props.getEntityNews(name);
+    this.props.getTweets(name);
     this.props.getWiki(name);
   }
 
@@ -67,7 +71,7 @@ export class Entity extends React.Component<IProps, IState> {
 
   render() {
     const { activeAccordion } = this.state;
-    const { news, wiki } = this.props;
+    const { news, wiki, tweets } = this.props;
     return (
       <Grid>
         <Grid.Row columns={2}>
@@ -75,7 +79,7 @@ export class Entity extends React.Component<IProps, IState> {
             {wiki && <Segment loading={!wiki}>
               <h3>{wiki.title}</h3>
               {wiki.summary}
-              <EntityList entities={ wiki.entities } redirect={this.fetchData} />
+              <EntityList entities={ wiki.entities } onEntityClick={this.fetchData} />
             </Segment>}
           </Grid.Column>
           <Grid.Column>
@@ -89,7 +93,7 @@ export class Entity extends React.Component<IProps, IState> {
                 Related News
               </Accordion.Title>
               <Accordion.Content active={activeAccordion === 0}>
-                {news && <NewsFeed news={news} />}
+                {news && <NewsFeed news={news} onEntityClick={this.fetchData} />}
               </Accordion.Content>
 
               <Accordion.Title
@@ -101,7 +105,7 @@ export class Entity extends React.Component<IProps, IState> {
                 Tweets
               </Accordion.Title>
               <Accordion.Content active={activeAccordion === 1}>
-                <p>Local tweets here.</p>
+                {tweets && <TwitterFeed tweets={tweets} />}
               </Accordion.Content>
             </Accordion>
           </Grid.Column>
@@ -115,13 +119,15 @@ const mapStateToProps = ({ data }: IRootState) => ({
   loading: data.loading,
   news: data.news,
   wiki: data.wiki,
+  tweets: data.tweets,
 });
 const mapDispatchToProps = (dispatch: any) => ({
   getNews: () => dispatch(getNews()),
   getEntityNews: (name: string) => dispatch(getEntityNews(name)),
+  getTweets: (term: string) => dispatch(getTweets(term)),
   getWiki: (term: string) => dispatch(getWiki(term))
 });
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Entity);
+)(Topic);

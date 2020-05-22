@@ -46,6 +46,11 @@ export default (state: DataState = initialState, action: any): DataState => {
         ...state,
         tweets: action.payload,
       }
+    case ACTION_TYPES.TWEETS_FETCH_SUCCESS:
+      return {
+        ...state,
+        tweets: action.payload,
+      }
     default:
       return state;
   }
@@ -54,6 +59,8 @@ export default (state: DataState = initialState, action: any): DataState => {
 export const ACTION_TYPES = {
   LOCAL_TWEETS_FETCH_SUCCESS: 'LOCAL_TWEETS_FETCH_SUCCESS',
   LOCAL_TWEETS_FETCH_FAILURE: 'LOCAL_TWEETS_FETCH_FAILURE',
+  TWEETS_FETCH_SUCCESS: 'TWEETS_FETCH_SUCCESS',
+  TWEETS_FETCH_FAILURE: 'TWEETS_FETCH_FAILURE',
   NEWS_FETCH_SUCCESS: 'NEWS_FETCH_SUCCESS',
   NEWS_FETCH_FAILURE: 'NEWS_FETCH_FAILURE',
   ENTITY_NEWS_FETCH_SUCCESS: 'ENTITY_NEWS_FETCH_SUCCESS',
@@ -103,6 +110,21 @@ export const getWiki = (term: string) => async (dispatch: any, getState: any) =>
   } else if (response.status === 401) {
     dispatch({
       type: ACTION_TYPES.WIKI_FETCH_FAILURE,
+    });
+  }
+}
+
+export const getTweets = (term: string) => async (dispatch: any, getState: any) => {
+  const response = await fetch(`${apiUrl}/tweets/${term}`);
+  const data = await response.json();
+  if (response.status === 200) {
+    dispatch({
+      type: ACTION_TYPES.TWEETS_FETCH_SUCCESS,
+      payload: data
+    })
+  } else if (response.status === 401) {
+    dispatch({
+      type: ACTION_TYPES.TWEETS_FETCH_FAILURE,
     });
   }
 }

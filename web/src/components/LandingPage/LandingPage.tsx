@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { Segment, Search } from 'semantic-ui-react';
+import { Segment } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
 import { getNews } from '../../reducers/data.reducer';
@@ -18,7 +18,7 @@ interface IState {
   activeAccordion: number;
 }
 
-export class Dashboard extends React.Component<IProps, IState> {
+export class LandingPage extends React.Component<IProps, IState> {
 
   constructor(props: any) {
     super(props);
@@ -27,19 +27,24 @@ export class Dashboard extends React.Component<IProps, IState> {
       loading: false,
       activeAccordion: -1
     }
+
+    this.fetchData = this.fetchData.bind(this);
   }
 
   componentDidMount() {
     this.props.getNews();
   }
 
+  fetchData(name: string) {
+    console.log(name)
+  }
+
   render() {
     const { news } = this.props;
     return (
       <div>
-        <Search />
         <Segment loading={news.length === 0}>
-          <NewsFeed news={news}/>
+          <NewsFeed news={news} onEntityClick={this.fetchData}/>
         </Segment>
       </div>
     );
@@ -56,5 +61,5 @@ const mapDispatchToProps = (dispatch: any) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Dashboard);
+)(LandingPage);
 

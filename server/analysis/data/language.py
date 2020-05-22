@@ -15,19 +15,22 @@ def extract_entities(text):
                 else:
                     entity_dict[name] = {
                         "type": 'unknown',
+                        "viewType": 'topic',
                         "count": 1
                     }
                 if chunk.label() == "PERSON":
                     entity_dict[name]["type"] = 'user'
                 elif chunk.label() == "GPE":
                     entity_dict[name]["type"] = 'globe'
-                elif chunk.label() == "ORGANIZATION":
+                    entity_dict[name]["viewType"] = 'place'
+                elif chunk.label() == "ORGANIZATION" or chunk.label() == "FACILITY":
                     entity_dict[name]["type"] = 'building'     
     # can be person, organization or gpe = Geopolitical entity
     for k, v in entity_dict.items():
         entities.append({
             "text": k,
             "type": v["type"],
+            "viewType": v["viewType"],
             "count": v["count"]
         })
     return sorted(entities, key=lambda k: k['count'], reverse=True) 
