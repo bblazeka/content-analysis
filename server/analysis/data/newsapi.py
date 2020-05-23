@@ -2,7 +2,7 @@ import sys, json
 import requests
 from flask.json import jsonify
 
-from .language import extract_entities
+from .language import extract_entities, format_entities, merge_entities
 
 with open('keys/newsapi.json') as json_file:
     data = json.load(json_file)
@@ -29,10 +29,18 @@ def get_country_news(country):
 
 def format_news(response):
     articles = []
+    entities = dict()
     for article in response.json()['articles']:
+        article_entities = dict()
         if article['description'] is not None:
-            article['entities'] = extract_entities(article['description'])
+            article_entities = extract_entities(article['description'])
         else:
-            article['entities'] = extract_entities(article['title'])
+            article_entities = extract_entities(article['title'])
+        entities = merge_entities(entities, article_entities)
+        article['entities'] = format_entities(article_entities)
         articles.append(article)
-    return jsonify(articles)
+    
+    return jsonify({
+        "articles": articles,
+        "entities": format_entities(entities)
+    })

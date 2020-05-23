@@ -4,10 +4,10 @@ from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
 
 def extract_entities(text):
-    entities = []
     entity_dict = dict()
     for sent in nltk.sent_tokenize(text):
         for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
+            print(chunk)
             if type(chunk) == Tree:
                 name = ' '.join(c[0] for c in chunk.leaves())
                 if name in entity_dict:
@@ -26,6 +26,17 @@ def extract_entities(text):
                 elif chunk.label() == "ORGANIZATION" or chunk.label() == "FACILITY":
                     entity_dict[name]["type"] = 'building'     
     # can be person, organization or gpe = Geopolitical entity
+    return entity_dict
+
+def merge_entities(entities_a, entities_b):
+    print(entities_a)
+    print(entities_b)
+    merged_entities = entities_a.copy()
+    merged_entities.update(entities_b)
+    return merged_entities
+
+def format_entities(entity_dict):
+    entities = []
     for k, v in entity_dict.items():
         entities.append({
             "text": k,
@@ -33,4 +44,4 @@ def extract_entities(text):
             "viewType": v["viewType"],
             "count": v["count"]
         })
-    return sorted(entities, key=lambda k: k['count'], reverse=True) 
+    return sorted(entities, key=lambda k: k['count'], reverse=True)

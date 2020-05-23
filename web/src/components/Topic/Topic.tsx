@@ -6,13 +6,13 @@ import { Accordion, Grid, Icon, Segment } from 'semantic-ui-react';
 import { IRootState } from '../../reducers/rootReducer';
 import { getNews, getEntityNews, getWiki, getTweets } from '../../reducers/data.reducer';
 import { NewsFeed } from '../NewsFeed/NewsFeed';
-import { EntityList } from '../EntityList/EntityList';
+import { Keywords } from '../Keywords/Keywords';
 import { TwitterFeed } from '../TwitterFeed/TwitterFeed';
 
 interface IProps {
   loading: boolean;
-  news: any[];
-  tweets: any[];
+  news: any;
+  tweets: any;
   wiki: any;
   getNews: () => Promise<boolean>;
   getTweets: (name: string) => Promise<boolean>;
@@ -79,7 +79,7 @@ export class Topic extends React.Component<IProps, IState> {
             {wiki && <Segment loading={!wiki}>
               <h3>{wiki.title}</h3>
               {wiki.summary}
-              <EntityList entities={ wiki.entities } onEntityClick={this.fetchData} />
+              <Keywords entities={ wiki.entities } onEntityClick={this.fetchData} />
             </Segment>}
           </Grid.Column>
           <Grid.Column>

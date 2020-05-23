@@ -6,7 +6,7 @@ from datetime import datetime, date, time, timedelta
 from collections import Counter
 import sys, json
 
-from .language import extract_entities
+from .language import extract_entities, format_entities, merge_entities
 
 with open('keys/twitter.json') as json_file:
     data = json.load(json_file)
@@ -36,29 +36,41 @@ def detect_hashtags(status):
 
 def get_tweets(query, count, lang):
     tweets = []
+    entities = dict()
     
     for status in Cursor(auth_api.search,q=f'#{query}',count=count,
                            since="2020-01-01").items():
         if status.truncated == False and status.lang == lang:
+            tweet_entities = extract_entities(status.text)
             tweets.append({
                 "title": status.user.name,
-                "entities": extract_entities(status.text),
+                "entities": format_entities(tweet_entities),
                 "description": status.user.screen_name,
                 "url": f'https://twitter.com/{status.user.screen_name}',
                 "text": status.text
             })
-    return tweets
+            entities = merge_entities(entities, tweet_entities)
+    return {
+        "tweets": tweets,
+        "entities": format_entities(entities)
+    }
 
 def get_local_tweets(query, count, lang, lat, lng):
     tweets = []
+    entities = dict()
     for status in Cursor(auth_api.search,q=f'#{query}',count=count, geocode=f'{lat},{lng},10km',
                            since="2020-01-01").items():
         if status.truncated == False and status.lang == lang:
+            tweet_entities = extract_entities(status.text)
             tweets.append({
                 "title": status.user.name,
-                "entities": extract_entities(status.text),
+                "entities": format_entities(tweet_entities),
                 "description": status.user.screen_name,
                 "url": f'https://twitter.com/{status.user.screen_name}',
                 "text": status.text
             })
-    return tweets
+            entities = merge_entities(entities, tweet_entities)
+    return {
+        "tweets": tweets,
+        "entities": format_entities(entities)
+    }

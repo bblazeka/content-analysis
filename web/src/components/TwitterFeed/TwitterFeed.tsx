@@ -3,13 +3,16 @@ import * as React from 'react';
 import { Feed, List, Label } from 'semantic-ui-react';
 
 interface ITwitterFeedProps {
-  tweets: any[];
+  tweets: any;
 }
 
 export const TwitterFeed: React.FC<ITwitterFeedProps> = ({ tweets }) => {
+  if (!tweets.tweets) {
+    return (<div>Loading...</div>);
+  }
   return (
      <Feed>
-      {tweets.map((element: any) => {
+      {tweets.tweets.map((element: any) => {
         return (<Feed.Event key={element.title}>
           <Feed.Label icon='twitter' />
           <Feed.Content>

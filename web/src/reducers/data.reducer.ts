@@ -2,12 +2,24 @@ const apiUrl = 'http://127.0.0.1:5000';
 
 const initialState = {
   loading: false,
-  news: [],
-  tweets: [],
-  wiki: null,
+  news: {} as News,
+  tweets: {} as Twitter,
+  wiki: {},
 };
 
 export type DataState = Readonly<typeof initialState>;
+
+export type News = {
+  "articles": any[],
+  "entities": any[]
+}
+
+export type Twitter = {
+  "tweets": any[],
+  "entities": any[]
+}
+
+export type Tweets = {}
 
 export default (state: DataState = initialState, action: any): DataState => {
   switch (action.type) {
@@ -19,7 +31,6 @@ export default (state: DataState = initialState, action: any): DataState => {
     case ACTION_TYPES.NEWS_FETCH_FAILURE:
       return {
         ...state,
-        news: []
       }
     case ACTION_TYPES.WIKI_FETCH_SUCCESS:
       return {
@@ -29,7 +40,6 @@ export default (state: DataState = initialState, action: any): DataState => {
     case ACTION_TYPES.WIKI_FETCH_FAILURE:
       return {
         ...state,
-        wiki: null
       }
     case ACTION_TYPES.ENTITY_NEWS_FETCH_SUCCESS:
       return {
@@ -39,7 +49,6 @@ export default (state: DataState = initialState, action: any): DataState => {
     case ACTION_TYPES.ENTITY_NEWS_FETCH_FAILURE:
       return {
         ...state,
-        news: []
       }
     case ACTION_TYPES.LOCAL_TWEETS_FETCH_SUCCESS:
       return {

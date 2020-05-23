@@ -20,7 +20,6 @@ def home():
 @app.route('/tweets/<query>')
 def tweets(query):
     tweets = get_tweets(query, 10, "en")
-    print(tweets)
     return jsonify(tweets)
 
 @app.route('/tweets/local/<query>')
@@ -28,7 +27,6 @@ def local_tweets(query):
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     tweets = get_local_tweets(query, 10, "en", lat, lng)
-    print(tweets)
     return jsonify(tweets)
 
 @app.route('/news/<query>')

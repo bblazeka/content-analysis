@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 
 import { List, Label } from 'semantic-ui-react';
 
-interface IEntityListProps {
+interface IKeywordsProps {
   entities: any[];
   onEntityClick: (name: string) => void;
 }
 
-export const EntityList: React.FC<IEntityListProps> = ({ entities, onEntityClick }) => {
+export const Keywords: React.FC<IKeywordsProps> = ({ entities, onEntityClick }) => {
+  if (!entities) {
+    return (<div>Loading...</div>);
+  }
   return (
     <List horizontal>
     {entities.map((entity: any, index: number) => {

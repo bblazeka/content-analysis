@@ -10,8 +10,8 @@ import { TwitterFeed } from '../TwitterFeed/TwitterFeed';
 
 interface IProps {
   loading: boolean;
-  news: any[];
-  tweets: any[];
+  news: any;
+  tweets: any;
   getNews: () => Promise<boolean>;
   getLocalTweets: (lat: number, lng: number) => Promise<boolean>;
 }

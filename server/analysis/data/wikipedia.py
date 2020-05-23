@@ -1,7 +1,7 @@
 import wikipedia
 from flask.json import jsonify
 
-from .language import extract_entities
+from .language import extract_entities, format_entities
 
 def get_wiki(entity):
     page = wikipedia.page(entity)
@@ -11,5 +11,5 @@ def get_wiki(entity):
         "url": page.url,
         "content": page.content,
         "summary": summary,
-        "entities": extract_entities(summary)
+        "entities": format_entities(extract_entities(summary))
     })
