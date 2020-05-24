@@ -34,6 +34,11 @@ export class Map extends React.Component<IProps, IState> {
     this.loadMap();
   }
 
+  componentDidUpdate() {
+    const { lat, lng } = this.props;
+    this.map.setCenter([lng, lat]);
+  }
+
   private loadMap() {
     const map = new mapboxgl.Map({
       container: this.mapContainer,

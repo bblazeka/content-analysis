@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Accordion, Grid, Icon, Segment } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
-import { getNews, getEntityNews, getWiki, getTweets } from '../../reducers/data.reducer';
+import { getNews, getTopicNews, getWiki, getTweets } from '../../reducers/data.reducer';
 import { NewsFeed } from '../NewsFeed/NewsFeed';
 import { Keywords } from '../Keywords/Keywords';
 import { TwitterFeed } from '../TwitterFeed/TwitterFeed';
@@ -16,7 +16,7 @@ interface IProps {
   wiki: any;
   getNews: () => Promise<boolean>;
   getTweets: (name: string) => Promise<boolean>;
-  getEntityNews: (name: string) => Promise<boolean>;
+  getTopicNews: (name: string) => Promise<boolean>;
   getWiki: (term: string) => Promise<boolean>;
 }
 
@@ -46,7 +46,7 @@ export class Topic extends React.Component<IProps, IState> {
   }
 
   fetchData(name: any) {
-    this.props.getEntityNews(name);
+    this.props.getTopicNews(name);
     this.props.getTweets(name);
     this.props.getWiki(name);
   }
@@ -123,7 +123,7 @@ const mapStateToProps = ({ data }: IRootState) => ({
 });
 const mapDispatchToProps = (dispatch: any) => ({
   getNews: () => dispatch(getNews()),
-  getEntityNews: (name: string) => dispatch(getEntityNews(name)),
+  getTopicNews: (name: string) => dispatch(getTopicNews(name)),
   getTweets: (term: string) => dispatch(getTweets(term)),
   getWiki: (term: string) => dispatch(getWiki(term))
 });

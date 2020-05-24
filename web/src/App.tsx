@@ -15,7 +15,7 @@ function App() {
           Content Analysis
         </p>
       </header>
-        <Route exact path="/place/:name" component={Place} />
+        <Route exact path="/place/:term" component={Place} />
         <Route exact path="/topic/:name" component={Topic} />
         <Route exact path="/" component={LandingPage} />
       <footer className="App-footer">

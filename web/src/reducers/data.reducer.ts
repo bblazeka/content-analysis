@@ -5,6 +5,7 @@ const initialState = {
   news: {} as News,
   tweets: {} as Twitter,
   wiki: {},
+  place: {}
 };
 
 export type DataState = Readonly<typeof initialState>;
@@ -60,12 +61,19 @@ export default (state: DataState = initialState, action: any): DataState => {
         ...state,
         tweets: action.payload,
       }
+    case ACTION_TYPES.GEOCODE_SUCCESS:
+      return {
+        ...state,
+        place: action.payload,
+      }
     default:
       return state;
   }
 };
 
 export const ACTION_TYPES = {
+  GEOCODE_SUCCESS: 'GEOCODE_SUCCESS',
+  GEOCODE_FAILURE: 'GEOCODE_FAILURE',
   LOCAL_TWEETS_FETCH_SUCCESS: 'LOCAL_TWEETS_FETCH_SUCCESS',
   LOCAL_TWEETS_FETCH_FAILURE: 'LOCAL_TWEETS_FETCH_FAILURE',
   TWEETS_FETCH_SUCCESS: 'TWEETS_FETCH_SUCCESS',
@@ -93,7 +101,7 @@ export const getNews = () => async (dispatch: any, getState: any) => {
   }
 }
 
-export const getEntityNews = (name: string) => async (dispatch: any, getState: any) => {
+export const getTopicNews = (name: string) => async (dispatch: any, getState: any) => {
   const response = await fetch(`${apiUrl}/news/${name}`);
   const data = await response.json();
   if (response.status === 200) {
@@ -137,11 +145,26 @@ export const getTweets = (term: string) => async (dispatch: any, getState: any) 
     });
   }
 }
-
-export const getLocalTweets = (lat: number, lng: number) => async (dispatch: any, getState: any) => {
-  const response = await fetch(`${apiUrl}/tweets/local/Graz?lat=${lat}&lng=${lng}`);
+export const geolocate = (term: string) => async (dispatch: any, getState: any) => {
+  const response = await fetch(`${apiUrl}/map/geocode/${term}`);
   const data = await response.json();
-  console.log(data)
+  if (response.status === 200) {
+    dispatch(getLocalTweets(term, data.lat, data.lng));
+    dispatch(getTopicNews(term));
+    dispatch({
+      type: ACTION_TYPES.GEOCODE_SUCCESS,
+      payload: data
+    })
+  } else if (response.status === 401) {
+    dispatch({
+      type: ACTION_TYPES.GEOCODE_FAILURE,
+    });
+  }
+}
+
+export const getLocalTweets = (term: string, lat: number, lng: number) => async (dispatch: any, getState: any) => {
+  const response = await fetch(`${apiUrl}/tweets/local/${term}?lat=${lat}&lng=${lng}`);
+  const data = await response.json();
   if (response.status === 200) {
     dispatch({
       type: ACTION_TYPES.LOCAL_TWEETS_FETCH_SUCCESS,

@@ -9,6 +9,7 @@ from flask.json import jsonify
 from analysis.data.wikipedia import get_wiki
 from analysis.data.twitter import get_tweets, get_local_tweets
 from analysis.data.newsapi import get_query_news, get_country_news
+from analysis.data.map import geocode
 
 @app.route('/')
 @app.route('/home')
@@ -38,3 +39,7 @@ def news(query):
 def wiki(query):
     wiki = get_wiki(query)
     return wiki
+
+@app.route('/map/geocode/<place>')
+def geocoding(place):
+    return geocode(place)

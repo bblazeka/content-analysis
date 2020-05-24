@@ -4,19 +4,24 @@ import { connect } from 'react-redux';
 import { Accordion, Grid, Icon } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
-import { getNews, getLocalTweets } from '../../reducers/data.reducer';
+import { getNews, getTopicNews, geolocate } from '../../reducers/data.reducer';
 import { Map } from '../Map/Map';
 import { TwitterFeed } from '../TwitterFeed/TwitterFeed';
+import { NewsFeed } from '../NewsFeed/NewsFeed';
 
 interface IProps {
   loading: boolean;
   news: any;
+  place: any;
   tweets: any;
   getNews: () => Promise<boolean>;
   getLocalTweets: (lat: number, lng: number) => Promise<boolean>;
+  getTopicNews: (term: string) => Promise<boolean>;
+  geolocate: (term: string) => Promise<boolean>;
 }
 
 interface IState {
+  term: string;
   loading: boolean;
   activeAccordion: number;
   lat: number;
@@ -29,6 +34,7 @@ export class Place extends React.Component<IProps, IState> {
     super(props);
 
     this.state = {
+      term: "",
       loading: false,
       lat: 47.07103,
       lng: 15.43811,
@@ -36,9 +42,23 @@ export class Place extends React.Component<IProps, IState> {
     }
   }
 
+  static getDerivedStateFromProps(props: any, state: any) {
+    const { term } = props.match.params;
+    if (state.term !== term) {
+      return {
+        term,
+        activeAccordion: -1
+      }
+    }
+    return null
+  }
+
   componentDidMount() {
-    this.props.getNews();
-    this.props.getLocalTweets(this.state.lat, this.state.lng);
+    this.props.geolocate(this.state.term);
+  }
+
+  fetchData(name: any) {
+    this.props.getTopicNews(name);
   }
 
   handleClick = (e: any, titleProps: any) => {
@@ -51,12 +71,12 @@ export class Place extends React.Component<IProps, IState> {
 
   render() {
     const { activeAccordion, lat, lng } = this.state;
-    const { tweets } = this.props;
+    const { tweets, news, place } = this.props;
     return (
       <Grid>
         <Grid.Row columns={2}>
           <Grid.Column>
-            <Map lat={lat} lng={lng}/>
+            <Map lat={(place.lat ? place.lat : lat)} lng={(place.lng ? place.lng : lng)}/>
           </Grid.Column>
           <Grid.Column>
             <Accordion fluid styled>
@@ -66,10 +86,10 @@ export class Place extends React.Component<IProps, IState> {
                 onClick={this.handleClick}
               >
                 <Icon name='dropdown' />
-                Local News
+                News
               </Accordion.Title>
               <Accordion.Content active={activeAccordion === 0}>
-                <p>Here come news</p>
+                <NewsFeed news={news} onEntityClick={this.fetchData} />
               </Accordion.Content>
 
               <Accordion.Title
@@ -95,10 +115,12 @@ const mapStateToProps = ({ data }: IRootState) => ({
   loading: data.loading,
   news: data.news,
   tweets: data.tweets,
+  place: data.place,
 });
 const mapDispatchToProps = (dispatch: any) => ({
   getNews: () => dispatch(getNews()),
-  getLocalTweets: (lat: number, lng: number) => dispatch(getLocalTweets(lat, lng))
+  getTopicNews: (term: string) => dispatch(getTopicNews(term)),
+  geolocate: (term: string) => dispatch(geolocate(term))
 });
 export default connect(
   mapStateToProps,

@@ -1,12 +1,10 @@
-import sys, json
 import requests
 from flask.json import jsonify
 
 from .language import extract_entities, format_entities, merge_entities
+from .util import get_key
 
-with open('keys/newsapi.json') as json_file:
-    data = json.load(json_file)
-    newsApiKey=data["apiKey"]
+newsApiKey = get_key('keys/newsapi.json')
 
 def get_query_news(query):
     date = '2020-05-09'
