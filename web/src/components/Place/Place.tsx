@@ -40,6 +40,8 @@ export class Place extends React.Component<IProps, IState> {
       lng: 15.43811,
       activeAccordion: -1
     }
+
+    this.fetchData = this.fetchData.bind(this);
   }
 
   static getDerivedStateFromProps(props: any, state: any) {
@@ -76,7 +78,11 @@ export class Place extends React.Component<IProps, IState> {
       <Grid>
         <Grid.Row columns={2}>
           <Grid.Column>
-            <Map lat={(place.lat ? place.lat : lat)} lng={(place.lng ? place.lng : lng)}/>
+            <Map 
+              lat={(place.lat ? place.lat : lat)} 
+              lng={(place.lng ? place.lng : lng)} 
+              bbox={place.bbox}
+            />
           </Grid.Column>
           <Grid.Column>
             <Accordion fluid styled>

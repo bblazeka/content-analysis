@@ -9,6 +9,7 @@ import './Map.scss';
 interface IProps {
   lat: number;
   lng: number;
+  bbox: number[];
 }
 
 interface IState {
@@ -35,8 +36,9 @@ export class Map extends React.Component<IProps, IState> {
   }
 
   componentDidUpdate() {
-    const { lat, lng } = this.props;
+    const { lat, lng, bbox } = this.props;
     this.map.setCenter([lng, lat]);
+    this.map.fitBounds(bbox);
   }
 
   private loadMap() {
