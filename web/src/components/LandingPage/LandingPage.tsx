@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { Segment } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
-import { getNews } from '../../reducers/data.reducer';
+import { getNews, getTopicNews } from '../../reducers/data.reducer';
 import { NewsFeed } from '../NewsFeed/NewsFeed';
 
 interface IProps {
   loading: boolean;
   news: any;
   getNews: () => Promise<boolean>;
+  getTopicNews: (term: string) => Promise<boolean>;
 }
 
 interface IState {
@@ -36,7 +37,7 @@ export class LandingPage extends React.Component<IProps, IState> {
   }
 
   fetchData(name: string) {
-    console.log(name)
+    this.props.getTopicNews(name);
   }
 
   render() {
@@ -57,6 +58,7 @@ const mapStateToProps = ({ data }: IRootState) => ({
 });
 const mapDispatchToProps = (dispatch: any) => ({
   getNews: () => dispatch(getNews()),
+  getTopicNews: (term: string) => dispatch(getTopicNews(term))
 });
 export default connect(
   mapStateToProps,
