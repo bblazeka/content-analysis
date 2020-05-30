@@ -11,6 +11,11 @@ def extract_entities(text):
                 name = ' '.join(c[0] for c in chunk.leaves())
                 if name in entity_dict:
                     entity_dict[name]["count"]+=1
+                elif len([key for key,val in entity_dict.items() if name in key]) > 0:
+                    for key,_ in entity_dict.items():
+                        if name in key:
+                            name = key
+                            entity_dict[name]["count"]+=1
                 else:
                     entity_dict[name] = {
                         "type": 'unknown',

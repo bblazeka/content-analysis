@@ -12,8 +12,8 @@ export const TwitterFeed: React.FC<ITwitterFeedProps> = ({ tweets }) => {
   }
   return (
      <Feed>
-      {tweets.tweets.map((element: any) => {
-        return (<Feed.Event key={element.title}>
+      {tweets.tweets.map((element: any, index: number) => {
+        return (<Feed.Event key={` ${element.title} ${index}`}>
           <Feed.Label icon='twitter' />
           <Feed.Content>
             <Feed.Summary><a href={element.url}>{element.title}</a></Feed.Summary>

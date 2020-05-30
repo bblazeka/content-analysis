@@ -8,7 +8,6 @@ geocoder = Geocoder(access_token = get_key('keys/mapapi.json'))
 def geocode(term):
     response = geocoder.forward(term)
     feature = response.json()["features"][0]
-    print(feature)
     is_place = feature["place_type"][0] == 'place'
     return jsonify({
         "lng": feature["center"][0],
