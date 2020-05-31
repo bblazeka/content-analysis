@@ -15,62 +15,47 @@ with open('keys/twitter.json') as json_file:
     access_token=data["access_token"]
     access_token_secret=data["access_token_secret"]
 
-account_list = []
-
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 auth_api = API(auth, wait_on_rate_limit=True)
 
-def detect_hashtags(status):
-    hashtags = []
-    if hasattr(status, "entities"):
-        entities = status.entities
-        if "hashtags" in entities:
-            for ent in entities["hashtags"]:
-                if ent is not None:
-                    if "text" in ent:
-                        hashtag = ent["text"]
-                        if hashtag is not None:
-                            hashtags.append(hashtag)
-    return hashtags
-
 def get_tweets(query, count, lang):
-    tweets = []
-    entities = dict()
-    
-    for status in Cursor(auth_api.search,q=f'#{query}',count=count,
-                           since="2020-01-01").items():
-        if status.truncated == False and status.lang == lang:
-            tweet_entities = extract_entities(status.text)
-            tweets.append({
-                "title": status.user.name,
-                "entities": format_entities(tweet_entities),
-                "description": status.user.screen_name,
-                "url": f'https://twitter.com/{status.user.screen_name}',
-                "text": status.text
-            })
-            entities = merge_entities(entities, tweet_entities)
-    return {
-        "tweets": tweets,
-        "entities": format_entities(entities)
-    }
+    tweets = TweetsList()
+    for status in Cursor(auth_api.search,q=f'{query}',count=count, tweet_mode='extended',
+                           since="2020-01-01").items(100):
+        tweets.append(status)
+    return tweets.get_json()
 
 def get_local_tweets(query, count, lang, lat, lng):
-    tweets = []
-    entities = dict()
-    for status in Cursor(auth_api.search,q=f'#{query}',count=count, geocode=f'{lat},{lng},10km',
+    tweets = TweetsList()
+    for status in Cursor(auth_api.search,q=f'{query}',count=count, geocode=f'{lat},{lng},10km',
                            since="2020-01-01").items():
-        if status.truncated == False and status.lang == lang:
-            tweet_entities = extract_entities(status.text)
-            tweets.append({
-                "title": status.user.name,
-                "entities": format_entities(tweet_entities),
-                "description": status.user.screen_name,
-                "url": f'https://twitter.com/{status.user.screen_name}',
-                "text": status.text
-            })
-            entities = merge_entities(entities, tweet_entities)
-    return {
-        "tweets": tweets,
-        "entities": format_entities(entities)
-    }
+        tweets.append(status)         
+    return tweets.get_json()
+
+
+class TweetsList(list):
+
+    def __init__(self):
+        self.tweets = []
+        self.entities = dict()
+
+    def append(self, status):
+        tweet_entities = extract_entities(status.full_text)
+        self.tweets.append({
+            "title": status.user.name,
+            "entities": format_entities(tweet_entities),
+            "description": status.user.screen_name,
+            "url": f'https://twitter.com/{status.user.screen_name}',
+            "text": status.full_text,
+            "verified": status.user.verified,
+            "retweeted": status.retweet_count,
+            "favorite": status.favorite_count
+        })
+        self.entities = merge_entities(self.entities, tweet_entities)
+
+    def get_json(self):
+        return {
+            "tweets": self.tweets,
+            "entities": format_entities(self.entities)
+        }
