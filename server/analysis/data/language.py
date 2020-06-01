@@ -5,17 +5,14 @@ from nltk.tag import pos_tag
 
 def extract_entities(text):
     entity_dict = dict()
+    previous_chunk = None
+
     for sent in nltk.sent_tokenize(text):
         for chunk in nltk.ne_chunk(nltk.pos_tag(nltk.word_tokenize(sent))):
             if type(chunk) == Tree:
-                name = ' '.join(c[0] for c in chunk.leaves())
+                name = get_name_from_chunk(chunk, previous_chunk)
                 if name in entity_dict:
                     entity_dict[name]["count"]+=1
-                elif len([key for key,val in entity_dict.items() if name in key]) > 0:
-                    for key,_ in entity_dict.items():
-                        if name in key:
-                            name = key
-                            entity_dict[name]["count"]+=1
                 else:
                     entity_dict[name] = {
                         "type": 'unknown',
@@ -29,8 +26,11 @@ def extract_entities(text):
                     entity_dict[name]["viewType"] = 'place'
                 elif chunk.label() == "ORGANIZATION" or chunk.label() == "FACILITY":
                     entity_dict[name]["type"] = 'building'
+                previous_chunk = chunk
+            else:
+                previous_chunk = None
     # can be person, organization or gpe = Geopolitical entity
-    return entity_dict
+    return group_entities(entity_dict)
 
 def merge_entities(entities_a, entities_b):
     merged_entities = entities_a.copy()
@@ -47,3 +47,24 @@ def format_entities(entity_dict):
             "count": v["count"]
         })
     return sorted(entities, key=lambda k: k['count'], reverse=True)
+
+def get_name_from_chunk(chunk, previous_chunk):
+    if previous_chunk is not None and chunk.label() == previous_chunk.label() \
+        and len(chunk.leaves()) == 1 and len(previous_chunk.leaves()) == 1:
+        return f'{previous_chunk.leaves()[0][0]} {chunk.leaves()[0][0]}'
+    else:
+        return ' '.join(c[0] for c in chunk.leaves())
+
+def group_entities(entities):
+    for k,v in entities.items():
+        if len([key for key,val in entities.items() if k in key]) > 0:
+            for key,_ in entities.items():
+                if k in key and k != key:
+                    entities[key]["count"]+=v["count"]
+                    v["count"]=0
+    output_dict = dict()
+    for key,val in entities.items():
+        if val["count"] > 0:
+            output_dict[key] = val
+    return output_dict
+

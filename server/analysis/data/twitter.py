@@ -56,6 +56,6 @@ class TweetsList(list):
 
     def get_json(self):
         return {
-            "tweets": self.tweets,
+            "tweets": sorted(self.tweets, key=lambda k: k['favorite'], reverse=True),
             "entities": format_entities(self.entities)
         }

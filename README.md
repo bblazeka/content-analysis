@@ -1,6 +1,6 @@
 # content-analysis
 
-This is a web page project for analysis of content on twitter and various news articles. Key intention of this project is to apply web technologies, natural language processing [NLP](https://en.wikipedia.org/wiki/Natural_language_processing) to demonstrate connection between social media and news, topics that are popular and places where they are popular.
+This is a web page project for analysis of content on twitter and various news articles. Key intention of this project is to apply web technologies, natural language processing [(NLP)](https://en.wikipedia.org/wiki/Natural_language_processing) to demonstrate connection between social media and news, topics that are popular and places where they are popular. Work on this project is still in progress.
 
 There are two primary ways to represent data:
 
