@@ -4,15 +4,15 @@ This is a web page project for analysis of content on twitter and various news a
 
 There are two primary ways to represent data:
 
-![Landing](doc/landing.jpg)
+![Landing](docs/landing.png)
 
 - Topic - a term or a personal name, related news and tweets are shown
 
-![Topic](doc/topic.jpg)
+![Topic](docs/topic.png)
 
 - Place - place on Earth, local or relevant news and tweets are shown
 
-![Place](doc/place.jpg)
+![Place](docs/place.png)
 
 Every tweet or news article has a link of related terms for an easier navigation. Images of an application are in the root folder of this project.
 
