@@ -1,26 +1,15 @@
-const apiUrl = 'http://127.0.0.1:5000';
+import { apiUrl } from "../constants/util";
+import { News } from "../models";
+import { Tweets } from "../models";
 
 const initialState = {
   loading: false,
   news: {} as News,
-  tweets: {} as Twitter,
-  wiki: {},
-  place: {}
+  tweets: {} as Tweets,
+  wiki: {}
 };
 
 export type DataState = Readonly<typeof initialState>;
-
-export type News = {
-  "articles": any[],
-  "entities": any[]
-}
-
-export type Twitter = {
-  "tweets": any[],
-  "entities": any[]
-}
-
-export type Tweets = {}
 
 export default (state: DataState = initialState, action: any): DataState => {
   switch (action.type) {
@@ -61,19 +50,12 @@ export default (state: DataState = initialState, action: any): DataState => {
         ...state,
         tweets: action.payload,
       }
-    case ACTION_TYPES.GEOCODE_SUCCESS:
-      return {
-        ...state,
-        place: action.payload,
-      }
     default:
       return state;
   }
 };
 
 export const ACTION_TYPES = {
-  GEOCODE_SUCCESS: 'GEOCODE_SUCCESS',
-  GEOCODE_FAILURE: 'GEOCODE_FAILURE',
   LOCAL_TWEETS_FETCH_SUCCESS: 'LOCAL_TWEETS_FETCH_SUCCESS',
   LOCAL_TWEETS_FETCH_FAILURE: 'LOCAL_TWEETS_FETCH_FAILURE',
   TWEETS_FETCH_SUCCESS: 'TWEETS_FETCH_SUCCESS',
@@ -142,22 +124,6 @@ export const getTweets = (term: string) => async (dispatch: any, getState: any) 
   } else if (response.status === 401) {
     dispatch({
       type: ACTION_TYPES.TWEETS_FETCH_FAILURE,
-    });
-  }
-}
-export const geolocate = (term: string) => async (dispatch: any, getState: any) => {
-  const response = await fetch(`${apiUrl}/map/geocode/${term}`);
-  const data = await response.json();
-  if (response.status === 200) {
-    dispatch(getLocalTweets(term, data.lat, data.lng));
-    dispatch(getTopicNews(term));
-    dispatch({
-      type: ACTION_TYPES.GEOCODE_SUCCESS,
-      payload: data
-    })
-  } else if (response.status === 401) {
-    dispatch({
-      type: ACTION_TYPES.GEOCODE_FAILURE,
     });
   }
 }

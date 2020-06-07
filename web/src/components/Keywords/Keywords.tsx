@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { List, Label } from 'semantic-ui-react';
+import { Entity } from '../../models';
 
 interface IKeywordsProps {
-  entities: any[];
+  entities: Entity[];
   onEntityClick: (name: string) => void;
 }
 

@@ -1,9 +1,10 @@
 import * as React from 'react';
 
 import { Feed, List, Label } from 'semantic-ui-react';
+import { Tweets, Tweet, Entity } from '../../models';
 
 interface ITwitterFeedProps {
-  tweets: any;
+  tweets: Tweets;
 }
 
 export const TwitterFeed: React.FC<ITwitterFeedProps> = ({ tweets }) => {
@@ -12,7 +13,7 @@ export const TwitterFeed: React.FC<ITwitterFeedProps> = ({ tweets }) => {
   }
   return (
      <Feed>
-      {tweets.tweets.map((element: any, index: number) => {
+      {tweets.tweets.map((element: Tweet, index: number) => {
         return (<Feed.Event key={` ${element.title} ${index}`}>
           <Feed.Label icon='twitter' />
           <Feed.Content>
@@ -23,7 +24,7 @@ export const TwitterFeed: React.FC<ITwitterFeedProps> = ({ tweets }) => {
             </Feed.Extra>
             <Feed.Meta>
               <List horizontal>
-                {element.entities.map((entity: any, index: number) => {
+                {element.entities.map((entity: Entity, index: number) => {
                   return (<List.Item key={` ${entity.text} ${index}`}>
                     <Label content={` ${entity.text}`} icon={entity.type} />
                   </List.Item>)

@@ -4,16 +4,18 @@ import { connect } from 'react-redux';
 import { Accordion, Grid, Icon } from 'semantic-ui-react';
 
 import { IRootState } from '../../reducers/rootReducer';
-import { getNews, getTopicNews, geolocate } from '../../reducers/data.reducer';
+import { getNews, getTopicNews } from '../../reducers/data.reducer';
 import { Map } from '../Map/Map';
 import { TwitterFeed } from '../TwitterFeed/TwitterFeed';
 import { NewsFeed } from '../NewsFeed/NewsFeed';
+import { Tweets, News } from '../../models';
+import { geolocate } from '../../reducers/map.reducer';
 
 interface IProps {
   loading: boolean;
-  news: any;
+  news: News;
   place: any;
-  tweets: any;
+  tweets: Tweets;
   getNews: () => Promise<boolean>;
   getLocalTweets: (lat: number, lng: number) => Promise<boolean>;
   getTopicNews: (term: string) => Promise<boolean>;
@@ -117,11 +119,11 @@ export class Place extends React.Component<IProps, IState> {
   }
 }
 
-const mapStateToProps = ({ data }: IRootState) => ({
+const mapStateToProps = ({ data, map }: IRootState) => ({
   loading: data.loading,
   news: data.news,
   tweets: data.tweets,
-  place: data.place,
+  place: map.place,
 });
 const mapDispatchToProps = (dispatch: any) => ({
   getNews: () => dispatch(getNews()),

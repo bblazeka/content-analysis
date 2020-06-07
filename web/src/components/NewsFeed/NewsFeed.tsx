@@ -3,9 +3,10 @@ import * as React from 'react';
 import { Feed } from 'semantic-ui-react';
 
 import { Keywords } from '../Keywords/Keywords';
+import { Article, News } from '../../models';
 
 interface INewsFeedProps {
-  news: any;
+  news: News;
   onEntityClick: any;
 }
 
@@ -16,7 +17,7 @@ export const NewsFeed: React.FC<INewsFeedProps> = ({ news, onEntityClick }) => {
   return (
     <div>
       <Feed>
-        {news.articles.map((element: any) => {
+        {news.articles.map((element: Article) => {
           return (<Feed.Event key={element.title}>
             <Feed.Label icon='newspaper' />
             <Feed.Content>

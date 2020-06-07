@@ -8,11 +8,12 @@ import { getNews, getTopicNews, getWiki, getTweets } from '../../reducers/data.r
 import { NewsFeed } from '../NewsFeed/NewsFeed';
 import { Keywords } from '../Keywords/Keywords';
 import { TwitterFeed } from '../TwitterFeed/TwitterFeed';
+import { Tweets, News } from '../../models';
 
 interface IProps {
   loading: boolean;
-  news: any;
-  tweets: any;
+  news: News;
+  tweets: Tweets;
   wiki: any;
   getNews: () => Promise<boolean>;
   getTweets: (name: string) => Promise<boolean>;

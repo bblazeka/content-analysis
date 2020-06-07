@@ -6,10 +6,11 @@ import { Segment } from 'semantic-ui-react';
 import { IRootState } from '../../reducers/rootReducer';
 import { getNews, getTopicNews } from '../../reducers/data.reducer';
 import { NewsFeed } from '../NewsFeed/NewsFeed';
+import { News } from '../../models';
 
 interface IProps {
   loading: boolean;
-  news: any;
+  news: News;
   getNews: () => Promise<boolean>;
   getTopicNews: (term: string) => Promise<boolean>;
 }
@@ -44,7 +45,7 @@ export class LandingPage extends React.Component<IProps, IState> {
     const { news } = this.props;
     return (
       <div>
-        <Segment loading={news.length === 0}>
+        <Segment loading={news == null}>
           <NewsFeed news={news} onEntityClick={this.fetchData}/>
         </Segment>
       </div>
