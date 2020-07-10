@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Feed } from 'semantic-ui-react';
+import { Feed, Loader } from 'semantic-ui-react';
 
 import { Keywords } from '../Keywords/Keywords';
 import { Article, News } from '../../models';
@@ -12,7 +12,7 @@ interface INewsFeedProps {
 
 export const NewsFeed: React.FC<INewsFeedProps> = ({ news, onEntityClick }) => {
   if (!news.articles) {
-    return (<div>Loading...</div>);
+    return (<Loader active inline='centered' />);
   }
   return (
     <div>

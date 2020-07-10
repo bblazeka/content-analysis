@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.scss';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import { LandingPage, Topic, Place } from './components';
 
@@ -11,9 +11,9 @@ function App() {
     <div>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
+        <Link to="/">
           Content Analysis
-        </p>
+        </Link>
       </header>
         <Route exact path="/place/:term" component={Place} />
         <Route exact path="/topic/:name" component={Topic} />

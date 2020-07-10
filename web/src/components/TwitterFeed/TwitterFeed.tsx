@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Feed, List, Label } from 'semantic-ui-react';
+import { Feed, List, Label, Loader } from 'semantic-ui-react';
 import { Tweets, Tweet, Entity } from '../../models';
 
 interface ITwitterFeedProps {
@@ -9,7 +9,7 @@ interface ITwitterFeedProps {
 
 export const TwitterFeed: React.FC<ITwitterFeedProps> = ({ tweets }) => {
   if (!tweets.tweets) {
-    return (<div>Loading...</div>);
+    return (<Loader active inline='centered' />);
   }
   return (
      <Feed>
